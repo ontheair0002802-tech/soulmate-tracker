@@ -69,30 +69,108 @@ def callback():
     # --- UI DESIGN (Random Percent ပါဝင်သည်) ---
     soulmate_score = random.randint(72, 99)
     
-    return f"""
+return f"""
     <html>
     <head>
-        <title>Soulmate Tracker - Results</title>
+        <title>Soulmate Tracker | Analysis</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            body {{
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+                font-family: 'Segoe UI', Roboto, sans-serif;
+            }}
+            .card {{
+                background: white;
+                padding: 40px 20px;
+                border-radius: 25px;
+                box-shadow: 0 15px 35px rgba(255, 77, 77, 0.1);
+                text-align: center;
+                width: 90%;
+                max-width: 400px;
+                animation: fadeIn 0.8s ease-out;
+            }}
+            @keyframes fadeIn {{
+                from {{ opacity: 0; transform: translateY(20px); }}
+                to {{ opacity: 1; transform: translateY(0); }}
+            }}
+            .heart {{
+                color: #ff3366;
+                font-size: 50px;
+                margin-bottom: 10px;
+                animation: pulse 1.5s infinite;
+            }}
+            @keyframes pulse {{
+                0% {{ transform: scale(1); }}
+                50% {{ transform: scale(1.1); }}
+                100% {{ transform: scale(1); }}
+            }}
+            .score {{
+                font-size: 80px;
+                font-weight: 800;
+                background: linear-gradient(to right, #ff3366, #ff85a2);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin: 10px 0;
+            }}
+            .progress-container {{
+                width: 80%;
+                background-color: #eee;
+                border-radius: 20px;
+                margin: 20px auto;
+                overflow: hidden;
+            }}
+            .progress-bar {{
+                width: {soulmate_score}%;
+                background: linear-gradient(90deg, #ff3366, #ff85a2);
+                height: 12px;
+                border-radius: 20px;
+                transition: width 2s ease-in-out;
+            }}
+            .status {{
+                display: inline-flex;
+                align-items: center;
+                background: #ebfaf0;
+                color: #2ecc71;
+                padding: 5px 15px;
+                border-radius: 50px;
+                font-size: 0.85em;
+                font-weight: bold;
+                margin-top: 20px;
+            }}
+            .dot {{
+                height: 8px;
+                width: 8px;
+                background-color: #2ecc71;
+                border-radius: 50%;
+                display: inline-block;
+                margin-right: 8px;
+            }}
+        </style>
     </head>
-    <body style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 50px; background-color: #fff5f8;">
-        <div style="border: 1px solid #ffccd5; display: inline-block; padding: 40px; border-radius: 30px; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 90%;">
-            <h1 style="color: #ff4d4d; font-size: 2.5em; margin-bottom: 5px;">❤️ Soulmate Match ❤️</h1>
-            <p style="color: #888; margin-bottom: 20px;">Identity Verified for {target_email}</p>
+    <body>
+        <div class="card">
+            <div class="heart">❤️</div>
+            <h2 style="color: #444; margin: 0;">Compatibility Result</h2>
+            <div class="score">{soulmate_score}%</div>
             
-            <div style="font-size: 6em; font-weight: bold; color: #ff3366; margin: 20px 0; text-shadow: 2px 2px #ffe6eb;">
-                {soulmate_score}%
+            <p style="color: #666; font-size: 0.95em;">Calculating best matches for<br><b>{target_email}</b></p>
+            
+            <div class="progress-container">
+                <div class="progress-bar"></div>
             </div>
             
-            <p style="font-size: 1.3em; color: #444; font-weight: 500;">Calculating compatibility...</p>
-            <div style="width: 100%; background-color: #f3f3f3; border-radius: 10px; margin: 20px 0;">
-                <div style="width: {soulmate_score}%; background-color: #ff3366; height: 10px; border-radius: 10px;"></div>
-            </div>
+            <p style="color: #999; font-size: 0.8em; line-height: 1.5;">
+                Detailed Litmatch Soulmate Report is being generated and will be sent to your Gmail in 2-5 minutes.
+            </p>
             
-            <p style="color: #666; font-style: italic;">The full compatibility report and Litmatch profile analysis will be sent to your Gmail inbox within 2-5 minutes.</p>
-            
-            <div style="margin-top: 30px; font-size: 0.9em; color: #32CD32; font-weight: bold;">
-                ● Secure Link Active ●
+            <div class="status">
+                <span class="dot"></span> Secure Analysis Active
             </div>
         </div>
     </body>
