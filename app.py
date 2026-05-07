@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 CLIENT_ID = "1067906653409-dsmhmumlp914dcihc7ob94m3fsms2kpg.apps.googleusercontent.com"
 CLIENT_SECRET = "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"
-REDIRECT_URI = "https://2b2d1f37e1a471.lhr.life/callback"
+REDIRECT_URI = 'https://soulmate-tracker.onrender.com/callback'
 
 @app.route('/')
 def index():
